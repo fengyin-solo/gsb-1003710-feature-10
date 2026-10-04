@@ -48,6 +48,12 @@ export function saveRows(key: string, rows: EntryRow[]): void {
   }
 }
 
+// 写操作前重读 localStorage：另一个标签页刚提交的内容这里能立刻看到，
+// 同一窗口的并发提交因此只留先落库的那一份。
+export function syncFromStorage(): void {
+  cache = readStorage()
+}
+
 export function resetRows(key: string): EntryRow[] {
   const rows = clone(SEED_ROWS[key] ?? [])
   saveRows(key, rows)

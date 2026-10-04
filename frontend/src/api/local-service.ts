@@ -29,6 +29,11 @@ export function listEntries(key: string, filters: Record<string, string> = {}): 
 }
 
 export function runAction(key: string, id: number, action: string): ActionResult {
+  // 预警阈值配置已接入生效窗口生命周期：校验、复核、排期、生效都走 threshold-service，
+  // 通用入口不再直接改它的状态，避免绕过校验与权限。
+  if (key === 'warning') {
+    return { ok: false, message: '预警阈值配置已接入生效窗口生命周期，请通过阈值生命周期服务流转' }
+  }
   const meta = moduleMeta(key)
   const target = meta.actionTargets[action]
   if (!target) {
